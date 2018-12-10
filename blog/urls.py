@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^archives/(?P<year>[0-9]{4})/(?P<month>[0-9]{1,2})/$', views.archives, name='archives'),
     #获取分类
     url(r'^category/(?P<pk>[0-9]+)/$', views.category, name='category'),
+    #2048小游戏
+    url(r'^game$', views.game, name='game'),
 ]

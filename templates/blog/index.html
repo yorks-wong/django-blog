@@ -1,58 +1,309 @@
-﻿{% extends 'base.html' %}
-                    {% block main %}
-                    {% for post in post_list %}
-<article class="post post-1">
-    <header class="entry-header">
-        <h1 class="entry-title">
-            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-        </h1>
-        <div class="entry-meta">
-            <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
-            <span class="post-date">
-                <a href="#">
-                    <time class="entry-date"
-                          datetime="2012-11-09T23:15:57+00:00">{{ post.created_time }}</time>
-                </a>
-            </span>
-            <span class="post-author"><a href="#">{{ post.author }}</a></span>
-            <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>
-            <span class="views-count"><a href="#">588 阅读</a></span>
+﻿{% load staticfiles %}
+{% load blog_tags %}
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Django Blog</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static 'blog/assets/css/main2.css' %}" />
+</head>
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Header -->
+                <header id="header">
+                    <a href="{% url 'blog:index' %}" class="logo"><strong>A Django Blog</strong> by yorks</a>
+                    <ul class="icons">
+                        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                        <li><a href="#" class="icon fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
+                        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+                        <li><a href="#" class="icon fa-medium"><span class="label">Medium</span></a></li>
+                    </ul>
+                </header>
+
+                <!-- Banner -->
+                <section id="banner">
+                    <div class="content">
+                        <header>
+                            <h1>
+                                Hi, Welcome to<br />
+                                my Blog
+                            </h1>
+                            <p>一个由Django驱动的个人博客实例</p>
+                        </header>
+                        <p>Django是一个开放源代码的Web应用框架，由Python写成。采用了MVC的框架模式，即模型M，视图V和控制器C。它最初是被开发来用于管理劳伦斯出版集团旗下的一些以新闻内容为主的网站的，即是CMS（内容管理系统）软件。并于2005年7月在BSD许可证下发布。这套框架是以比利时的吉普赛爵士吉他手Django Reinhardt来命名的。</p>
+                        <ul class="actions">
+                            <li><a href="https://www.djangoproject.com/" class="button big">了解更多</a></li>
+                        </ul>
+                    </div>
+                    <span class="image object">
+                        <img src="{% static 'blog/images/001.jpg' %}" alt="" />
+                    </span>
+                </section>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>Django优势</h2>
+                    </header>
+                    <div class="features">
+                        <article>
+                            <span class="icon fa-diamond"></span>
+                            <div class="content">
+                                <h3>优雅的网址</h3>
+                                <p>在urls.py中用正则匹配网址，传递到对应的函数，随意你自己定义，网址可以如你所想，如你所愿。(需要注意的是:正则是一种独立的语法，并不是哪个语言所拥有的。)</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="icon fa-paper-plane"></span>
+                            <div class="content">
+                                <h3>模板系统</h3>
+                                <p>模板系统大大的提升了开发效率，因为模板系统设计简单，容易扩展。代码，样式可以分开设计，Django原生支持响应式模板，例如本站。</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="icon fa-rocket"></span>
+                            <div class="content">
+                                <h3>缓存系统</h3>
+                                <p>
+                                    Django和memcached、redis或者其他的缓存系统联用，提高了页面的加载速度。templates 文件夹views.py 中的函数渲染 templates 中的 Html 模板，得到动态内容的网页，可以用缓存来提高速度。
+                                </p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="icon fa-signal"></span>
+                            <div class="content">
+                                <h3>强大的数据库功能</h3>
+                                <p>
+                                    用 python 的类继承，几行代码就可以拥有一个丰富、动态的数据库操作接口（API），如果需要，你也能执行 SQL 语句ORM（Object-Relational Mapping“对象-关系-映射”），它实现了数据模型与数据库的解耦，即数据模型的设计不需要依赖于特定的数据库，通过简单的配置就可以轻松更换数据库。
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>博文列表</h2>
+                    </header>
+                    <div class="posts">
+
+                        {% for post in post_list %}
+                        <article>
+                            <h3 class="entry-title">
+                                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                            </h3>
+                            <div>
+                                <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
+                                <span class="post-date">
+                                    <a href="#">
+                                        <time class="entry-date"
+                                              datetime="2012-11-09T23:15:57+00:00">{{ post.created_time }}</time>
+                                    </a>
+                                </span>
+                                <span class="post-author"><a href="#">{{ post.author }}</a></span>
+                                <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>
+                                <span class="views-count"><a href="#">588 阅读</a></span>
+                            </div>
+                            <p>
+                                {{ post.excerpt }}
+                            </p>
+                            <ul class="actions">
+                                <li><a href="{{ post.get_absolute_url }}" class="button">继续阅读</a></li>
+                            </ul>
+                        </article>
+                        {% empty %}
+                        <div class="no-post">暂时还没有发布的文章！</div>
+                        {% endfor %}
+
+                    </div>
+                </section>
+
+                <ul class="pagination">
+                    <li><span class="button disabled">上一页</span></li>
+                    <li><a href="#" class="page active">1</a></li>
+                    <li><a href="#" class="page">2</a></li>
+                    <li><a href="#" class="page">3</a></li>
+                    <li><span>&hellip;</span></li>
+                    <li><a href="#" class="page">8</a></li>
+                    <li><a href="#" class="page">9</a></li>
+                    <li><a href="#" class="page">10</a></li>
+                    <li><a href="#" class="button">下一页</a></li>
+                </ul>
+
+            </div>
+
         </div>
-    </header>
-    <div class="entry-content clearfix">
-        <p>
-            {{ post.excerpt }}
-        </p>
-        <div class="read-more cl-effect-14">
-            <a href="{{ post.get_absolute_url }}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
+
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="搜索" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="{% url 'blog:index' %}">主页</a></li>
+                        <li>
+                            <span class="opener">最新文章</span>
+                            {% get_recent_posts as recent_post_list %}
+                            <ul>
+                                {% for post in recent_post_list %}
+                                <li>
+                                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                                </li>
+                                {% empty %}
+                                暂无文章！
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">归档</span>
+                            {% archives as date_list %}
+                            <ul>
+                                {% for date in date_list %}
+                                <li>
+                                    <a href="{% url 'blog:archives' date.year date.month %}">
+                                        {{ date.year }} 年 {{ date.month }} 月
+                                    </a>
+                                </li>
+                                {% empty %}
+                                暂无归档
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">分类</span>
+                            {% get_categories as category_list %}
+                            <ul>
+                                {% for category in category_list %}
+                                <li>
+                                    <a href="{% url 'blog:category' category.pk %}">
+                                        {{ category.name }}({{ category.post_set.count }})
+                                    </a>
+                                </li>
+                                {% empty %}
+                                暂无分类
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                        <li>
+                            <span class="opener">标签云</span>
+                            <ul>
+                                <li>
+                                    <a href="#">Django</a>
+                                </li>
+                                <li>
+                                    <a href="#">Python</a>
+                                </li>
+                                <li>
+                                    <a href="#">Java</a>
+                                </li>
+                                <li>
+                                    <a href="#">笔记</a>
+                                </li>
+                                <li>
+                                    <a href="#">文档</a>
+                                </li>
+                                <li>
+                                    <a href="#">AngularJS</a>
+                                </li>
+                                <li>
+                                    <a href="#">CSS</a>
+                                </li>
+                                <li>
+                                    <a href="#">JavaScript</a>
+                                </li>
+                                <li>
+                                    <a href="#">Snippet</a>
+                                </li>
+                                <li>
+                                    <a href="#">jQuery</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li><a href="{% url 'blog:game' %}">2048小游戏</a></li>
+
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>图片墙</h2>
+                    </header>
+                    <div class="mini-posts">
+                        <article>
+                            <a href="#" class="image"><img src="{% static 'blog/images/002.jpg' %}" alt="" /></a>
+                            <p>从服务器静态目录读取图片</p>
+                        </article>
+                        <article>
+                            <a href="#" class="image"><img src="{% static 'blog/images/003.jpg' %}" alt="" /></a>
+                            <p>从服务器静态目录读取图片</p>
+                        </article>
+                        <article>
+                            <a href="#" class="image"><img src="{% static 'blog/images/004.jpg' %}" alt="" /></a>
+                            <p>从服务器静态目录读取图片</p>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>关于</h2>
+                    </header>
+                    <p>“测试用个人博客”</p>
+                    <ul class="contact">
+                        <li class="fa-envelope-o">1693958668@qq.com</li>
+                        <li class="fa-phone">(000) 000-0000</li>
+                        <li class="fa-home">
+                            南京邮电大学<br />
+                            亚东新城区文苑路9号 210023
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">
+                        &copy 苏ICP备18066181号-1 by yorks <br><a href="https://github.com/yorks-wong"
+                                                               target="_blank" title="GitHub">GitHub主页</a>
+                    </p>
+                </footer>
+
+            </div>
         </div>
+
     </div>
-</article>
-<HR style="FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)" width="100%" color=#987cb9 SIZE=5>
-{% empty %}
-<div class="no-post">暂时还没有发布的文章！</div>
-                    {% endfor %}
 
+    <!-- Scripts-->
+    <script src="{% static 'blog/assets/js/jquery.min2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/browser.min2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/breakpoints.min.js' %}"></script>
+    <script src="{% static 'blog/assets/js/util2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/main2.js' %}"></script>
 
-<!-- 简单分页效果
-<div class="pagination-simple">
-    <a href="#">上一页</a>
-    <span class="current">第 6 页 / 共 11 页</span>
-    <a href="#">下一页</a>
-</div>
--->
-<div class="pagination">
-    <ul>
-        <li><a href="">1</a></li>
-        <li><a href="">...</a></li>
-        <li><a href="">4</a></li>
-        <li><a href="">5</a></li>
-        <li class="current"><a href="">6</a></li>
-        <li><a href="">7</a></li>
-        <li><a href="">8</a></li>
-        <li><a href="">...</a></li>
-        <li><a href="">11</a></li>
-    </ul>
-</div>
-
-                    {% endblock main %}
+</body>
+</html>

@@ -1,10 +1,44 @@
-﻿{% extends 'base.html' %}
+﻿{% load staticfiles %}
+{% load blog_tags %}
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+    <title>Django Blog</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static 'blog/assets/css/main2.css' %}" />
+</head>
+<body class="is-preload">
 
-                    {% block main %}
+    <!-- Wrapper -->
+    <div id="wrapper">
 
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+
+                <!-- Header -->
+                <header id="header">
+                    <a href="{% url 'blog:index' %}" class="logo"><strong>A Django Blog</strong> by yorks</a>
+                    <ul class="icons">
+                        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                        <li><a href="#" class="icon fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
+                        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+                        <li><a href="#" class="icon fa-medium"><span class="label">Medium</span></a></li>
+                    </ul>
+                </header>
+
+                <!-- Content -->
+                <section>
                     <article class="post post-{{ post.pk }}">
-                        <header class="entry-header">
-                            <h1 class="entry-title">{{ post.title }}</h1>
+                        <header class="main">
+                            <h1>{{ post.title }}</h1>
                             <div class="entry-meta">
                                 <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
                                 <span class="post-date">
@@ -22,79 +56,227 @@
                             {{ post.body|safe }}
                         </div>
                     </article>
-                    <section class="comment-area" id="comment-area">
-                        <hr>
-                        <h3>发表评论</h3>
+                </section>
 
-                        <form action="{% url 'comments:post_comment' post.pk %}" method="post" class="comment-form">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label for="{{ form.name.id_for_label }}">名字：</label>
-                                    {{ form.name }}
-                                    {{ form.name.errors }}
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="{{ form.email.id_for_label }}">邮箱：</label>
-                                    {{ form.email }}
-                                    {{ form.email.errors }}
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="{{ form.url.id_for_label }}">URL：</label>
-                                    {{ form.url }}
-                                    {{ form.url.errors }}
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="{{ form.text.id_for_label }}">评论：</label>
-                                    {{ form.text }}
-                                    {{ form.text.errors }}
-                                    <button type="submit" class="comment-btn">发表</button>
-                                </div>
-                            </div>    <!-- row -->
-                        </form>
+                <section class="comment-area" id="comment-area">
+                    <!--评论--->
+                    <h3>发表评论</h3>
 
-                        <div class="comment-list-panel">
-                            <h3>评论列表，共 <span>{{ post.comment_set.count }}</span> 条评论</h3>
-                            <ul class="comment-list list-unstyled">
-                                {% for comment in comment_list %}
-                                <li class="comment-item">
-                                    <span class="nickname">{{ comment.name }}</span>
-                                    <time class="submit-date">{{ comment.created_time }}</time>
-                                    <div class="text">
-                                        {{ comment.text }}
-                                    </div>
-                                </li>
-                                {% empty %}
-                                暂无评论
-                                {% endfor %}
-                            </ul>
-
+                    <form action="{% url 'comments:post_comment' post.pk %}" method="post" class="comment-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="{{ form.name.id_for_label }}">名字：</label>
+                                {{ form.name }}
+                                {{ form.name.errors }}
+                            </div>
+                            <div class="col-4">
+                                <label for="{{ form.email.id_for_label }}">邮箱：</label>
+                                {{ form.email }}
+                                {{ form.email.errors }}
+                            </div>
+                            <div class="col-4">
+                                <label for="{{ form.url.id_for_label }}">URL：</label>
+                                {{ form.url }}
+                                {{ form.url.errors }}
+                            </div>
+                            <div class="col-12">
+                                <br>
+                                <label for="{{ form.text.id_for_label }}">评论：</label>
+                                {{ form.text }}
+                                {{ form.text.errors }}
+                            </div><br>
+                            <div class="col-12">
+                                <ul class="actions">
+                                    <li>
+                                        <br>
+                                        <button type="submit" class="primary">发表</button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </section>
+                    </form>
 
-                    {% endblock main %}
-
-                    {% block toc %}
-
-                    <div class="widget widget-content">
-                        <h3 class="widget-title">文章目录</h3>
-                        <ul>
-                            <li>
-                                <a href="#">教程特点</a>
+                    <!--评论列表-->
+                    <div class="comment-list-panel">
+                        <h3>评论列表，共 <span>{{ post.comment_set.count }}</span> 条评论</h3>
+                        <ul class="comment-list list-unstyled">
+                            {% for comment in comment_list %}
+                            <li class="comment-item">
+                                <span class="nickname">{{ comment.name }}</span>
+                                <time class="submit-date">{{ comment.created_time }}</time>
+                                <div class="text">
+                                    {{ comment.text }}
+                                </div>
                             </li>
-                            <li>
-                                <a href="#">谁适合这个教程</a>
-                            </li>
-                            <li>
-                                <a href="#">在线预览</a>
-                            </li>
-                            <li>
-                                <a href="#">资源列表</a>
-                            </li>
-                            <li>
-                                <a href="#">获取帮助</a>
-                            </li>
+                            {% empty %}
+                            暂无评论
+                            {% endfor %}
                         </ul>
                     </div>
-                   
-                    {% endblock toc %}
+                 </section>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <div class="inner">
+
+                <!-- Search -->
+                <section id="search" class="alt">
+                    <form method="post" action="#">
+                        <input type="text" name="query" id="query" placeholder="搜索" />
+                    </form>
+                </section>
+
+                <!-- Menu -->
+                <nav id="menu">
+                    <header class="major">
+                        <h2>Menu</h2>
+                    </header>
+                    <ul>
+                        <li><a href="{% url 'blog:index' %}">主页</a></li>
+                        <li>
+                            <span class="opener">最新文章</span>
+                            {% get_recent_posts as recent_post_list %}
+                            <ul>
+                                {% for post in recent_post_list %}
+                                <li>
+                                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                                </li>
+                                {% empty %}
+                                暂无文章！
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">归档</span>
+                            {% archives as date_list %}
+                            <ul>
+                                {% for date in date_list %}
+                                <li>
+                                    <a href="{% url 'blog:archives' date.year date.month %}">
+                                        {{ date.year }} 年 {{ date.month }} 月
+                                    </a>
+                                </li>
+                                {% empty %}
+                                暂无归档
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="opener">分类</span>
+                            {% get_categories as category_list %}
+                            <ul>
+                                {% for category in category_list %}
+                                <li>
+                                    <a href="{% url 'blog:category' category.pk %}">
+                                        {{ category.name }}({{ category.post_set.count }})
+                                    </a>
+                                </li>
+                                {% empty %}
+                                暂无分类
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                        <li>
+                            <span class="opener">标签云</span>
+                            <ul>
+                                <li>
+                                    <a href="#">Django</a>
+                                </li>
+                                <li>
+                                    <a href="#">Python</a>
+                                </li>
+                                <li>
+                                    <a href="#">Java</a>
+                                </li>
+                                <li>
+                                    <a href="#">笔记</a>
+                                </li>
+                                <li>
+                                    <a href="#">文档</a>
+                                </li>
+                                <li>
+                                    <a href="#">AngularJS</a>
+                                </li>
+                                <li>
+                                    <a href="#">CSS</a>
+                                </li>
+                                <li>
+                                    <a href="#">JavaScript</a>
+                                </li>
+                                <li>
+                                    <a href="#">Snippet</a>
+                                </li>
+                                <li>
+                                    <a href="#">jQuery</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li><a href="{% url 'blog:game' %}">2048小游戏</a></li>
+
+                    </ul>
+                </nav>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>图片墙</h2>
+                    </header>
+                    <div class="mini-posts">
+                        <article>
+                            <a href="#" class="image"><img src="{% static 'blog/images/002.jpg' %}" alt="" /></a>
+                            <p>从服务器静态目录读取图片</p>
+                        </article>
+                        <article>
+                            <a href="#" class="image"><img src="{% static 'blog/images/003.jpg' %}" alt="" /></a>
+                            <p>从服务器静态目录读取图片</p>
+                        </article>
+                        <article>
+                            <a href="#" class="image"><img src="{% static 'blog/images/004.jpg' %}" alt="" /></a>
+                            <p>从服务器静态目录读取图片</p>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- Section -->
+                <section>
+                    <header class="major">
+                        <h2>关于</h2>
+                    </header>
+                    <p>“测试用个人博客”</p>
+                    <ul class="contact">
+                        <li class="fa-envelope-o">1693958668@qq.com</li>
+                        <li class="fa-phone">(000) 000-0000</li>
+                        <li class="fa-home">
+                            南京邮电大学<br />
+                            亚东新城区文苑路9号 210023
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Footer -->
+                <footer id="footer">
+                    <p class="copyright">
+                        &copy 苏ICP备18066181号-1 by yorks <br><a href="https://github.com/yorks-wong"
+                                                             target="_blank" title="GitHub">GitHub主页</a>
+                    </p>
+                </footer>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'blog/assets/js/jquery.min2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/browser.min2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/breakpoints.min2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/util2.js' %}"></script>
+    <script src="{% static 'blog/assets/js/main2.js' %}"></script>
+
+</body>
+</html>
