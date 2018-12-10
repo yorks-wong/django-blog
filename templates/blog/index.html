@@ -7,6 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="{% static 'blog/assets/css/main2.css' %}" />
+    <link rel="shortcut icon" href="{%static 'favicon.ico' %}" />
 </head>
 <body class="is-preload">
 
@@ -15,7 +16,7 @@
 
         <!-- Main -->
         <div id="main">
-            <div class="inner">
+            <section class="inner">
 
                 <!-- Header -->
                 <header id="header">
@@ -35,7 +36,7 @@
                         <header>
                             <h1>
                                 Hi, Welcome to<br />
-                                my Blog
+                                my Blog!
                             </h1>
                             <p>一个由Django驱动的个人博客实例</p>
                         </header>
@@ -49,6 +50,10 @@
                     </span>
                 </section>
 
+                {% if error_msg %}
+                <p>{{ error_msg }}</p>
+                {% endif %}
+
                 <!-- Section -->
                 <section>
                     <header class="major">
@@ -58,23 +63,22 @@
 
                         {% for post in post_list %}
                         <article>
-                            <h3 class="entry-title">
+                            <h3>
                                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                             </h3>
                             <div>
-                                <span class="post-category"><a href="#">{{ post.category.name }}</a></span>
+                                <span class="post-category"><a href="#">{{ post.category.name }}</a></span>&emsp;
                                 <span class="post-date">
                                     <a href="#">
-                                        <time class="entry-date"
-                                              datetime="2012-11-09T23:15:57+00:00">{{ post.created_time }}</time>
+                                        <time>{{ post.created_time }}</time>
                                     </a>
-                                </span>
-                                <span class="post-author"><a href="#">{{ post.author }}</a></span>
-                                <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>
-                                <span class="views-count"><a href="#">588 阅读</a></span>
+                                </span>&emsp;
+                                <span class="post-author"><a href="#">{{ post.author }}</a></span>&emsp;
+                                <span class="comments-link"><a href="#">{{ post.comment_set.count }} 评论</a></span>&emsp;
+                                <span class="views-count"><a href="{{ post.get_absolute_url }}">{{ post.views }} 阅读</a></span>
                             </div>
                             <p>
-                                {{ post.excerpt }}
+                                {{ post.excerpt }}...
                             </p>
                             <ul class="actions">
                                 <li><a href="{{ post.get_absolute_url }}" class="button">继续阅读</a></li>
@@ -87,18 +91,64 @@
                     </div>
                 </section>
 
-                <ul class="pagination">
-                    <li><span class="button disabled">上一页</span></li>
-                    <li><a href="#" class="page active">1</a></li>
-                    <li><a href="#" class="page">2</a></li>
-                    <li><a href="#" class="page">3</a></li>
-                    <li><span>&hellip;</span></li>
-                    <li><a href="#" class="page">8</a></li>
-                    <li><a href="#" class="page">9</a></li>
-                    <li><a href="#" class="page">10</a></li>
-                    <li><a href="#" class="button">下一页</a></li>
-                </ul><br />
+                <div id="divcss5">
+                    {% if is_paginated %}
+                    <ul class="pagination">
 
+                        {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}" class="button">上一页</a></li>
+                        {% else %}
+                        <li><span class="button disabled">上一页</span></li>
+                        {% endif %}
+
+                        {% if first %}
+                        <li>
+                            <a href="?page=1" class="page">1</a>
+                        </li>
+                        {% endif %}
+                        {% if left %}
+                        {% if left_has_more %}
+                        <li>
+                            <span>&hellip;</span>
+                        </li>
+                        {% endif %}
+                        {% for i in left %}
+                        <li>
+                            <a href="?page={{ i }}" class="page">{{ i }}</a>
+                        </li>
+                        {% endfor %}
+                        {% endif %}
+                        <li>
+                            <a href="?page={{ page_obj.number }}" class="page active">{{ page_obj.number }}</a>
+                        </li>
+                        {% if right %}
+                        {% for i in right %}
+                        <li>
+                            <a href="?page={{ i }}" class="page">{{ i }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if right_has_more %}
+                        <li>
+                            <span>&hellip;</span>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+                        {% if last %}
+                        <li>
+                            <a href="?page={{ paginator.num_pages }}" class="page">{{ paginator.num_pages }}</a>
+                        </li>
+                        {% endif %}
+
+                        {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}" class="button">下一页</a></li>
+                        {% else %}
+                        <li><span class="button disabled">下一页</span></li>
+                        {% endif %}
+
+                    </ul>
+                    {% endif %}
+                    <br>
+                </div>
 
                 <!-- Section -->
                 <section>
@@ -140,7 +190,7 @@
                         </article>
                     </div>
                 </section>
-            </div>
+</div>
 
         </div>
 
@@ -151,9 +201,10 @@
 
                 <!-- Search -->
                 <section id="search" class="alt">
-                    <form method="post" action="#">
-                        <input type="text" name="query" id="query" placeholder="搜索" />
+                    <form role="search" method="get" id="searchform" action="{% url 'blog:search' %}">
+                        <input type="search" name="q" placeholder="搜索" required>
                     </form>
+                    <!---<button type="submit"><span class="ion-ios-search-strong"></span></button>--->
                 </section>
 
                 <!-- Menu -->
@@ -172,7 +223,7 @@
                                     <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                                 </li>
                                 {% empty %}
-                                暂无文章！
+                                暂无文章
                                 {% endfor %}
                             </ul>
                         </li>
@@ -209,40 +260,18 @@
 
                         <li>
                             <span class="opener">标签云</span>
+                            {% get_tags as tag_list %}
                             <ul>
+                                {% for tag in tag_list %}
                                 <li>
-                                    <a href="#">Django</a>
+                                    <a href="{% url 'blog:tag' tag.pk %}">{{ tag.name }}</a>
                                 </li>
-                                <li>
-                                    <a href="#">Python</a>
-                                </li>
-                                <li>
-                                    <a href="#">Java</a>
-                                </li>
-                                <li>
-                                    <a href="#">笔记</a>
-                                </li>
-                                <li>
-                                    <a href="#">文档</a>
-                                </li>
-                                <li>
-                                    <a href="#">AngularJS</a>
-                                </li>
-                                <li>
-                                    <a href="#">CSS</a>
-                                </li>
-                                <li>
-                                    <a href="#">JavaScript</a>
-                                </li>
-                                <li>
-                                    <a href="#">Snippet</a>
-                                </li>
-                                <li>
-                                    <a href="#">jQuery</a>
-                                </li>
+                                {% empty %}
+                                暂无标签！
+                                {% endfor %}
                             </ul>
                         </li>
-
+                        <li> <a href="{% url 'rss' %}">RSS订阅</a></li>
                         <li><a href="{% url 'blog:game' %}">2048小游戏</a></li>
 
                     </ul>
