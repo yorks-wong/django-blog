@@ -25,6 +25,13 @@ section, summary, time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;}
 
+.divcss5{
+	float: left;
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;}
@@ -2315,15 +2322,27 @@ input, select, textarea {
 /* Pagination */
 
 ul.pagination {
-    cursor: default;
-    list-style: none;
-    padding-left: 0;
+	/*width:800px;
+	margin-left: auto;
+	margin-right: auto;*/
+	clear: left;
+	float: left;
+	position: relative;
+	left: 50%;
+	text-align: center;
 }
 
 		ul.pagination li {
-			display: inline-block;
+			display: block;
+			line-height: 50px;
+
 			padding-left: 0;
 			vertical-align: middle;
+
+			float: left;
+			position: relative;
+			right: 50%;
+
 		}
 
 			ul.pagination li > .page {
